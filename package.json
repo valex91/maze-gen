@@ -1,0 +1,25 @@
+{
+  "name": "maze-gen",
+  "version": "1.0.0",
+  "description": "simple maze generator",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack-dev-server --config=./webpack.dev.js"
+  },
+  "keywords": [
+    "maze",
+    "generator"
+  ],
+  "author": "Valentino Losito",
+  "license": "ISC",
+  "devDependencies": {
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.3.3333",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.2.1"
+  },
+  "dependencies": {}
+}
