@@ -25,28 +25,36 @@ export class Renderer {
   private _renderCell(coords: Record<'x' | 'y', number>, cellWalls: Array<number>, size: number) {
     cellWalls.forEach((w: number, index: number) => {
       this._context.beginPath();
-      this._context.moveTo(coords.x, coords.y);
+      this._adjustedMoveTo(coords.x, coords.y);
       switch (index) {
         case 0:
-          this._context.moveTo(coords.x, coords.y);
-          (w !== -1) ? this._context.lineTo(coords.x + size, coords.y) : null;
+          this._adjustedMoveTo(coords.x, coords.y);
+          (w !== -1) ? this._adjustedLineTo(coords.x + size, coords.y) : null;
           break;
         case 1:
-          this._context.moveTo(coords.x + size, coords.y);
-          (w !== -1) ? this._context.lineTo(coords.x + size, coords.y + size) : null;
+          this._adjustedMoveTo(coords.x + size, coords.y);
+          (w !== -1) ? this._adjustedLineTo(coords.x + size, coords.y + size) : null;
           break;
         case 2:
-          this._context.moveTo(coords.x + size, coords.y + size);
-          (w !== -1) ? this._context.lineTo(coords.x, coords.y + size) : null;
+          this._adjustedMoveTo(coords.x + size, coords.y + size);
+          (w !== -1) ? this._adjustedLineTo(coords.x, coords.y + size) : null;
           break;
         case 3:
-          this._context.moveTo(coords.x, coords.y + size);
-          (w !== -1) ? this._context.lineTo(coords.x, coords.y - size) : this._context.moveTo(coords.x, coords.y - size);
+          this._adjustedMoveTo(coords.x, coords.y + size);
+          (w !== -1) ? this._adjustedLineTo(coords.x, coords.y) : null
           break;
       }
 
       this._context.closePath();
       this._context.stroke();
     });
+  }
+
+  private _adjustedMoveTo(x: number, y: number): void {
+    this._context.moveTo(x + .5, y + .5);
+  }
+
+  private _adjustedLineTo(x: number, y: number): void {
+    this._context.lineTo(x + .5, y + .5);
   }
 }

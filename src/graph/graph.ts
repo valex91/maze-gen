@@ -27,40 +27,37 @@ export class Graph {
   }
 
   public removeEdge(fistIndex: number, secondIndex: number): void {
-    if (this._adjacencyList[fistIndex]) {
+    if (this._adjacencyList[fistIndex] && this._adjacencyList[secondIndex]) {
       this._adjacencyList[fistIndex].removeEdge(secondIndex);
-    }
-
-    if (this._adjacencyList[secondIndex]) {
       this._adjacencyList[secondIndex].removeEdge(fistIndex);
     }
   }
 
-  public createMaze(startingIndex: number): void {
+  public create(startingIndex: number) {
+    let nodesToGo: number = this._adjacencyList.length - 2,
+      current: number = startingIndex;
     const stack: number[] = [startingIndex],
-      visitedNodes: Array<boolean> = [];
+      visitedNodes: { [key: number]: boolean } = {};
     visitedNodes[-1] = true;
     visitedNodes[startingIndex] = true;
-    let helper: (i: number) => void;
 
-    (helper = (i) => {
-      if (visitedNodes.length < this._adjacencyList.length) {
-        visitedNodes[i] = true;
-        const unvisitedSiblings: Array<number> = this._adjacencyList[i].getEdges().filter((sibling: number) => !visitedNodes[sibling]);
-        if (unvisitedSiblings.length) {
-          const randomSibling: number = this._pickRandomIndex(unvisitedSiblings.length);
-          this.removeEdge(unvisitedSiblings[randomSibling], i)
-          stack.push(i)
-          helper(unvisitedSiblings[randomSibling]);
+    while (nodesToGo) {
+      const unvisitedSiblings: Array<number> = this._adjacencyList[current].getEdges().filter((sibling: number) => !visitedNodes[sibling]);
+      if (unvisitedSiblings.length) {
+        const randomSibling: number = this._pickRandomIndex(unvisitedSiblings.length);
+        stack.push(current)
+        this.removeEdge(current, unvisitedSiblings[randomSibling]);
+        current = unvisitedSiblings[randomSibling];
+        visitedNodes[current] = true;
+        nodesToGo--;
+      } else {
+        if (stack.length) {
+          current = stack.pop() as number;
         } else {
-          if (stack.length) {
-            helper(stack.pop() as number);
-          }
+          break;
         }
       }
-    })(startingIndex);
-
-    console.log(this._adjacencyList);
+    }
   }
 
   public getGraph(): Array<Vertex> {

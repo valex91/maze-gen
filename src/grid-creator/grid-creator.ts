@@ -34,7 +34,7 @@ export class GridCreator {
     }
 
 
-    this._graph.createMaze(3)
+    this._graph.create(0)
     new Renderer(canvas, length, y).render(this._graph.getGraph())
   }
 }
