@@ -11,7 +11,7 @@ export class SiblingIndexGenerator {
     const _row = (row + difference);
 
     if (this._isOutSideBoundaries(_row, this._y)) {
-      return -1;
+      return Infinity;
     }
 
     return parseInt(_row.toString() + rowIndex.toString());
@@ -21,7 +21,7 @@ export class SiblingIndexGenerator {
     const _rowIndex = (rowIndex + difference);
 
     if (this._isOutSideBoundaries(_rowIndex, this._x)) {
-      return -1;
+      return Infinity;
     }
 
     return parseInt(row.toString() + _rowIndex.toString());

@@ -2,7 +2,7 @@ import { VertexValue } from '../vertex/vertex.interface';
 import { Vertex } from '../vertex/vertex';
 
 export class Graph {
-  private _adjacencyList: Array<Vertex>
+  private readonly _adjacencyList: Array<Vertex>;
   constructor() {
     this._adjacencyList = [];
   }
@@ -27,25 +27,24 @@ export class Graph {
   }
 
   public removeEdge(fistIndex: number, secondIndex: number): void {
-    if (this._adjacencyList[fistIndex] && this._adjacencyList[secondIndex]) {
-      this._adjacencyList[fistIndex].removeEdge(secondIndex);
-      this._adjacencyList[secondIndex].removeEdge(fistIndex);
-    }
+    this._adjacencyList[fistIndex].removeEdge(secondIndex);
+    this._adjacencyList[secondIndex].removeEdge(fistIndex);
   }
 
-  public create(startingIndex: number) {
-    let nodesToGo: number = this._adjacencyList.length - 2,
+  public create(startingIndex: number): void {
+    let nodesToGo: number = this._adjacencyList.length - 1,
       current: number = startingIndex;
     const stack: number[] = [startingIndex],
       visitedNodes: { [key: number]: boolean } = {};
     visitedNodes[-1] = true;
+    visitedNodes[Infinity] = true;
     visitedNodes[startingIndex] = true;
 
     while (nodesToGo) {
       const unvisitedSiblings: Array<number> = this._adjacencyList[current].getEdges().filter((sibling: number) => !visitedNodes[sibling]);
       if (unvisitedSiblings.length) {
         const randomSibling: number = this._pickRandomIndex(unvisitedSiblings.length);
-        stack.push(current)
+        stack.push(current);
         this.removeEdge(current, unvisitedSiblings[randomSibling]);
         current = unvisitedSiblings[randomSibling];
         visitedNodes[current] = true;
@@ -65,6 +64,6 @@ export class Graph {
   }
 
   private _pickRandomIndex(length: number) {
-    return Math.floor(Math.random() * length);
+    return Math.floor((Math.random() * 71) % length);
   }
 }
