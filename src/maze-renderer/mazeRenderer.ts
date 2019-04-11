@@ -1,6 +1,8 @@
 import { CollisionDetectionFactory } from '../collision-detection-factory/collision-detection-factory';
 import { CollisionDetection, IWall } from '../collision-detection/collision-detection';
 import { GoalLayer } from '../goal-layer/goal-layer';
+import { KeyboardHandler } from '../keyboard-handler/keyboard-handler';
+import { Movements } from '../movements/movements';
 import { PlayerLayer } from '../player-layer/player-layer';
 import { Vertex } from '../vertex/vertex';
 import { ICoordinates } from './coordinates.interface';
@@ -20,7 +22,12 @@ export class MazeRenderer {
     this._x = xSize;
     this._y = ySize;
     this._collisionDetection = CollisionDetectionFactory.create();
-    this._playerLayer = PlayerLayer.create(canvas, 20);
+    this._playerLayer = PlayerLayer.create(canvas, 20,
+      new Movements(
+        new KeyboardHandler()
+      )
+    );
+
     this._goalLayer = GoalLayer.create(canvas, 20);
     const size: number = xSize * ySize;
     this._startingPoint = Math.floor((Math.random() * size));
