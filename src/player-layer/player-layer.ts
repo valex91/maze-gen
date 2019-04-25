@@ -1,14 +1,21 @@
+import { inject } from 'inversion-box';
+import { Subscription } from 'rxjs';
+import { CollisionDetection } from '../collision-detection/collision-detection';
 import { LayerGenerator } from '../layer-generator/layer-generator';
 import { ICoordinates } from '../maze-renderer/coordinates.interface';
 import { Movements } from '../movements/movements';
 import { Directions } from '../movements/Movements.enum';
+import { PlayerPosition } from '../player-position/player-position';
 
 export class PlayerLayer extends LayerGenerator {
   public layerCanvas: HTMLCanvasElement;
   private readonly _halfOfCellSize: number;
   private readonly _quarterOfCellSize: number;
   private readonly _playerSize: number;
+  private readonly _collisionDetection: CollisionDetection = inject(CollisionDetection);
   private _cords?: ICoordinates;
+  private _playerPosition: PlayerPosition;
+  private _movements: Subscription;
 
   protected constructor(canvas: HTMLCanvasElement, cellSize: number, movements: Movements) {
     super(canvas);
@@ -16,9 +23,11 @@ export class PlayerLayer extends LayerGenerator {
     this._halfOfCellSize = Math.floor(cellSize / 2);
     this._playerSize = this._halfOfCellSize;
     this._quarterOfCellSize = Math.floor(this._halfOfCellSize / 2);
-    movements.movementsStream().subscribe((direction: Directions) => {
+    this._playerPosition = inject<PlayerPosition>(PlayerPosition);
+
+    this._movements = movements.movementsStream().subscribe((direction: Directions) => {
       this._reDraw(direction);
-    })
+    });
   }
 
   public static create(canvas: HTMLCanvasElement, cellSize: number, movements: Movements): PlayerLayer {
@@ -30,8 +39,16 @@ export class PlayerLayer extends LayerGenerator {
     this._drawPlayer(coords);
   }
 
+  public clear() {
+    this._movements.unsubscribe();
+  }
+
   private _reDraw(direction: Directions) {
     if (this._cords) {
+      if (!this._collisionDetection.isValidMovement(this._cords, direction)) {
+        return;
+      }
+
       switch (direction) {
         case  Directions.Left:
           this._cords.x = this._cords.x - (this._playerSize * 2);
@@ -50,6 +67,8 @@ export class PlayerLayer extends LayerGenerator {
           this._drawPlayer(this._cords);
           break;
       }
+
+      this._playerPosition.set(this._cords);
     }
   }
 

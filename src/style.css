@@ -7,5 +7,13 @@ canvas {
 }
 
 .layerContainer {
+    position: relative;
     margin: 0 auto;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
 }

@@ -2,6 +2,7 @@ export abstract class LayerGenerator {
   protected _context: CanvasRenderingContext2D;
 
   protected constructor(canvas: HTMLCanvasElement) {
+    canvas.addEventListener('unload', () => alert('removed'));
     const layerCanvasElement = document.createElement('canvas');
     layerCanvasElement.height = canvas.height;
     layerCanvasElement.width = canvas.width;

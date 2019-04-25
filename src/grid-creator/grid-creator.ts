@@ -1,40 +1,36 @@
 import { Graph } from '../graph/graph';
-import { VertexValue } from '../vertex/vertex.interface';
-import { Vertex } from '../vertex/vertex';
-import { SiblingIndexGenerator } from '../sibling-index-generator/sibling-index-generator';
 import { MazeRenderer } from '../maze-renderer/mazeRenderer';
+import { SiblingIndexGenerator } from '../sibling-index-generator/sibling-index-generator';
+import { Vertex } from '../vertex/vertex';
 
 export class GridCreator {
-  private _grid: Array<Array<VertexValue>>;
-  private _graph: Graph = new Graph();
+  public static create(size: number): Promise<MazeRenderer> {
+    return new Promise((res) => {
+      const _graph = new Graph();
+      const siblingGenerator: SiblingIndexGenerator = new SiblingIndexGenerator(size);
+      for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+          const codedIndex: number = parseInt(i.toString() + j.toString());
 
-  constructor(x: number, y: number, canvas: HTMLCanvasElement) {
-    const siblingGenerator: SiblingIndexGenerator = new SiblingIndexGenerator(x, y);
-    this._grid = [];
-    for (let i = 0; i < y; i++) {
-      this._grid.push(Array.from({ length: x }, (_v: string, index: number): VertexValue => {
-        const codedIndex: number = parseInt(i.toString() + index.toString());
+          _graph.AddVertex(codedIndex);
+          const newVertex: Vertex = _graph.getVertex(codedIndex);
 
-        this._graph.AddVertex(codedIndex, '#');
-        const newVertex: Vertex = this._graph.getVertex(codedIndex);
+          const topSibling = siblingGenerator.generateYSibling(i, j, -1);
+          const bottomSibling = siblingGenerator.generateYSibling(i, j, 1);
+          const leftSibling = siblingGenerator.generateXSibling(i, j, -1);
+          const rightSibling = siblingGenerator.generateXSibling(i, j, 1);
 
-        const topSibling = siblingGenerator.generateYSibling(i, index, -1);
-        const bottomSibling = siblingGenerator.generateYSibling(i, index, 1);
-        const leftSibling = siblingGenerator.generateXSibling(i, index, -1);
-        const rightSibling = siblingGenerator.generateXSibling(i, index, 1);
+          newVertex.addEdge(topSibling);
+          newVertex.addEdge(rightSibling);
+          newVertex.addEdge(bottomSibling);
+          newVertex.addEdge(leftSibling);
+        }
+      }
 
-
-        newVertex.addEdge(topSibling);
-        newVertex.addEdge(rightSibling);
-        newVertex.addEdge(bottomSibling);
-        newVertex.addEdge(leftSibling);
-
-        return newVertex.getValue();
-      }));
-    }
-
-
-    this._graph.create(0);
-    new MazeRenderer(canvas, x, y).render(this._graph.getGraph())
+      _graph.generateEntropy(0);
+      const renderInstance = new MazeRenderer(size);
+      renderInstance.render(_graph.getGraph());
+      res(renderInstance);
+    });
   }
 }

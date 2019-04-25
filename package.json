@@ -33,6 +33,7 @@
     "webpack-dev-server": "^3.2.1"
   },
   "dependencies": {
+    "inversion-box": "^0.1.0",
     "rxjs": "^6.4.0"
   }
 }

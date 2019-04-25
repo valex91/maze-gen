@@ -1,29 +1,17 @@
-import { VertexValue } from '../vertex/vertex.interface';
 import { Vertex } from '../vertex/vertex';
-
 export class Graph {
   private readonly _adjacencyList: Array<Vertex>;
+
   constructor() {
     this._adjacencyList = [];
   }
 
-  public AddVertex(graphIndex: number, vertexValue: VertexValue) {
-    this._adjacencyList[graphIndex] = new Vertex(vertexValue);
-    return this._adjacencyList[graphIndex].getValue()
+  public AddVertex(graphIndex: number) {
+    this._adjacencyList[graphIndex] = new Vertex();
   }
 
   public getVertex(vertexIndex: number) {
     return this._adjacencyList[vertexIndex];
-  }
-
-  public addEdge(firstIndex: number, secondIndex: number) {
-    if (this._adjacencyList[firstIndex]) {
-      this._adjacencyList[firstIndex].addEdge(secondIndex);
-    }
-
-    if (this._adjacencyList[secondIndex]) {
-      this._adjacencyList[secondIndex].addEdge(firstIndex);
-    }
   }
 
   public removeEdge(fistIndex: number, secondIndex: number): void {
@@ -31,7 +19,7 @@ export class Graph {
     this._adjacencyList[secondIndex].removeEdge(fistIndex);
   }
 
-  public create(startingIndex: number): void {
+  public generateEntropy(startingIndex: number): void {
     let nodesToGo: number = this._adjacencyList.length - 1,
       current: number = startingIndex;
     const stack: number[] = [startingIndex],

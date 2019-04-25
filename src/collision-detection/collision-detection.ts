@@ -1,24 +1,16 @@
 import { ICoordinates } from '../maze-renderer/coordinates.interface';
-
-export interface IWall {
-  startingPoint: ICoordinates;
-  endingPoint: ICoordinates;
-  width: number;
-}
+import { Directions } from '../movements/Movements.enum';
 
 export class CollisionDetection {
-  private _walls: Array<IWall> = [];
+  private _cellBoundaries: Record<number, Record<number, Array<boolean>>> = {};
 
-  public registerWall(wall: IWall) {
-    this._walls.push(wall);
+  public registerCellBoundaries(cords: ICoordinates, walls: number[]) {
+    (this._cellBoundaries[cords.x] ? this._cellBoundaries[cords.x] : this._cellBoundaries[cords.x] = {})[cords.y] = walls.map((n: number) => {
+      return n === -1;
+    });
   }
 
-  public isValidMovement(cords: ICoordinates): boolean {
-    return this._walls.some((wall: IWall): boolean => {
-       return cords.x < (wall.startingPoint.x + wall.width) &&
-         cords.x > (wall.startingPoint.x )&&
-         cords.y < (wall.startingPoint.y + 20) &&
-         (cords.y + 20) > wall.startingPoint.y
-    });
+  public isValidMovement(cords: ICoordinates, direction: Directions): boolean {
+    return this._cellBoundaries[cords.x][cords.y][direction];
   }
 }

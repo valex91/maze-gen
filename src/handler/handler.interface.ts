@@ -3,4 +3,5 @@ import { Directions } from '../movements/Movements.enum';
 
 export interface IHandler {
   movements$(): Observable<Directions>;
+  clear(): void;
 }

@@ -1,16 +1,14 @@
 export class SiblingIndexGenerator {
-  private _y: number;
-  private _x: number;
+  private _boundaries: number;
 
-  constructor(x: number, y: number) {
-    this._x = x;
-    this._y = y;
+  constructor(size: number) {
+    this._boundaries = size;
   }
 
   public generateYSibling(row: number, rowIndex: number, difference: number): number {
     const _row = (row + difference);
 
-    if (this._isOutSideBoundaries(_row, this._y)) {
+    if (this._isOutSideBoundaries(_row)) {
       return Infinity;
     }
 
@@ -20,18 +18,14 @@ export class SiblingIndexGenerator {
   public generateXSibling(row: number, rowIndex: number, difference: number): number {
     const _rowIndex = (rowIndex + difference);
 
-    if (this._isOutSideBoundaries(_rowIndex, this._x)) {
+    if (this._isOutSideBoundaries(_rowIndex)) {
       return Infinity;
     }
 
     return parseInt(row.toString() + _rowIndex.toString());
   }
 
-  _isOutSideBoundaries(value: number, boundaries: number) {
-    if (value <= -1 || value >= boundaries) {
-      return true;
-    }
-
-    return false;
+  _isOutSideBoundaries(value: number) {
+    return value <= -1 || value >= this._boundaries;
   }
 }

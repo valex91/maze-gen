@@ -16,7 +16,7 @@ export class KeyboardHandler implements IHandler {
     return this._movementSubject.asObservable();
   }
 
-  public clearHandlers() {
+  public clear() {
     self.removeEventListener('keydown', this._bindedHandler);
   }
 
