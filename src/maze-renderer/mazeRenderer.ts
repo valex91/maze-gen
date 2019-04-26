@@ -1,5 +1,4 @@
-import { inject } from 'inversion-box'
-import { CollisionDetection } from '../collision-detection/collision-detection';
+import collisionDetection, { CollisionDetection } from '../collision-detection/collision-detection';
 import { GoalLayer } from '../goal-layer/goal-layer';
 import { IVertexLocation } from '../graph/graph';
 import { KeyboardHandler } from '../keyboard-handler/keyboard-handler';
@@ -24,7 +23,7 @@ export class MazeRenderer {
     const mainCanvas: HTMLCanvasElement = MainCanvasGenerator.generate(size);
     this._context = mainCanvas.getContext('2d') as CanvasRenderingContext2D;
     this._size = size;
-    this._collisionDetection = inject(CollisionDetection);
+    this._collisionDetection = collisionDetection;
     this._movements = new Movements(new KeyboardHandler());
     this._playerLayer = PlayerLayer.create(mainCanvas, TILE_SIZE, this._movements);
 

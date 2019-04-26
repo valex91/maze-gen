@@ -15,3 +15,5 @@ export class CollisionDetection {
     return this._cellBoundaries[cords.x][cords.y][direction];
   }
 }
+
+export default new CollisionDetection();

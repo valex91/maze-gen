@@ -1,8 +1,10 @@
 const path = require('path');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+  mode: 'production',
   entry: {
     main: ['./src/index.ts']
   },
@@ -13,16 +15,29 @@ module.exports = {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, './dist')
   },
-  devServer: {
-    contentBase: 'dist',
-    overlay: true
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin()
+    ]
   },
-  devtool: 'sourcemap',
   module: {
     rules: [
       {
         test: /\.ts$/,
-        use: 'ts-loader',
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              '@babel/preset-typescript',
+              ['@babel/preset-env', {
+                "targets": "> 0.25%, not dead"
+              }]
+            ],
+            plugins: [
+              '@babel/plugin-proposal-class-properties'
+            ]
+          }
+        },
         exclude: /node_modules/
       },
       {

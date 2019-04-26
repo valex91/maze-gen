@@ -12,3 +12,5 @@ export class PlayerPosition {
     this._positionSubject.next(coordinates);
   }
 }
+
+export default new PlayerPosition();

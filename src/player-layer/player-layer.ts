@@ -1,18 +1,17 @@
-import { inject } from 'inversion-box';
 import { Subscription } from 'rxjs';
-import { CollisionDetection } from '../collision-detection/collision-detection';
+import collisionDetection, { CollisionDetection } from '../collision-detection/collision-detection';
 import { LayerGenerator } from '../layer-generator/layer-generator';
 import { ICoordinates } from '../maze-renderer/coordinates.interface';
 import { Movements } from '../movements/movements';
 import { Directions } from '../movements/Movements.enum';
-import { PlayerPosition } from '../player-position/player-position';
+import playerPosition, { PlayerPosition } from '../player-position/player-position';
 
 export class PlayerLayer extends LayerGenerator {
   public layerCanvas: HTMLCanvasElement;
   private readonly _halfOfCellSize: number;
   private readonly _quarterOfCellSize: number;
   private readonly _playerSize: number;
-  private readonly _collisionDetection: CollisionDetection = inject(CollisionDetection);
+  private readonly _collisionDetection: CollisionDetection = collisionDetection;
   private _cords?: ICoordinates;
   private _playerPosition: PlayerPosition;
   private _movements: Subscription;
@@ -23,7 +22,7 @@ export class PlayerLayer extends LayerGenerator {
     this._halfOfCellSize = Math.floor(cellSize / 2);
     this._playerSize = this._halfOfCellSize;
     this._quarterOfCellSize = Math.floor(this._halfOfCellSize / 2);
-    this._playerPosition = inject<PlayerPosition>(PlayerPosition);
+    this._playerPosition = playerPosition;
 
     this._movements = movements.movementsStream().subscribe((direction: Directions) => {
       this._reDraw(direction);

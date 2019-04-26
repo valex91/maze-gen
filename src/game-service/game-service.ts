@@ -13,3 +13,5 @@ export class GameService {
     this._iterationsSubject.next();
   }
 }
+
+export default new GameService();
