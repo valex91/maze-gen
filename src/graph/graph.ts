@@ -1,45 +1,70 @@
 import { Vertex } from '../vertex/vertex';
+import { VisitedNodesHelper } from './visited-nodes-helper';
+
+export interface IVertexLocation {
+  row: number;
+  column: number;
+}
+
 export class Graph {
-  private readonly _adjacencyList: Array<Vertex>;
+  private readonly _adjacencyList: Array<Array<Vertex>>;
 
   constructor() {
     this._adjacencyList = [];
   }
 
-  public AddVertex(graphIndex: number) {
-    this._adjacencyList[graphIndex] = new Vertex();
+  public AddVertex(row: number, column: number) {
+    const newVertex: Vertex = new Vertex();
+    if (this._adjacencyList[row]) {
+      this._adjacencyList[row][column] = newVertex;
+    } else {
+      this._adjacencyList[row] = [];
+      this._adjacencyList[row][column] = newVertex;
+    }
   }
 
-  public getVertex(vertexIndex: number) {
-    return this._adjacencyList[vertexIndex];
+  public getVertex(row: number, column: number): Vertex {
+    return this._adjacencyList[row][column];
   }
 
-  public removeEdge(fistIndex: number, secondIndex: number): void {
-    this._adjacencyList[fistIndex].removeEdge(secondIndex);
-    this._adjacencyList[secondIndex].removeEdge(fistIndex);
+  public removeEdge(firstIndex: IVertexLocation, secondIndex: IVertexLocation): void {
+    if (this._adjacencyList[firstIndex.row] && this._adjacencyList[firstIndex.row][firstIndex.column]) {
+      this._adjacencyList[firstIndex.row][firstIndex.column].removeEdge(secondIndex);
+    }
+
+    if (this._adjacencyList[secondIndex.row] && this._adjacencyList[secondIndex.row][secondIndex.column]) {
+      this._adjacencyList[secondIndex.row][secondIndex.column].removeEdge(firstIndex);
+    }
   }
 
-  public generateEntropy(startingIndex: number): void {
-    let nodesToGo: number = this._adjacencyList.length - 1,
-      current: number = startingIndex;
-    const stack: number[] = [startingIndex],
-      visitedNodes: { [key: number]: boolean } = {};
-    visitedNodes[-1] = true;
-    visitedNodes[Infinity] = true;
-    visitedNodes[startingIndex] = true;
+  public generateEntropy(startingIndex: IVertexLocation): void {
+    let nodesToGo: number = this._adjacencyList.length + this._adjacencyList.reduce((acc: number, column: Array<Vertex>) => {
+        acc += (column.length - 1);
+        return acc;
+      }, 0) ,
+      current: IVertexLocation = startingIndex;
+    const stack: IVertexLocation[] = [startingIndex],
+      visitedNodes: VisitedNodesHelper = new VisitedNodesHelper();
+    visitedNodes.declareNodeAsVisited(startingIndex.row, startingIndex.column);
 
     while (nodesToGo) {
-      const unvisitedSiblings: Array<number> = this._adjacencyList[current].getEdges().filter((sibling: number) => !visitedNodes[sibling]);
+      const unvisitedSiblings: Array<IVertexLocation | -1> = this._adjacencyList[current.row][current.column].getEdges().filter(
+        (sibling: IVertexLocation | -1) => {
+          return (sibling !== -1 && (sibling as unknown as number) !== Infinity) && !visitedNodes.isVertexVisited(
+            sibling.row,
+            sibling.column
+          );
+        });
       if (unvisitedSiblings.length) {
         const randomSibling: number = this._pickRandomIndex(unvisitedSiblings.length);
         stack.push(current);
-        this.removeEdge(current, unvisitedSiblings[randomSibling]);
-        current = unvisitedSiblings[randomSibling];
-        visitedNodes[current] = true;
+        this.removeEdge(current, unvisitedSiblings[randomSibling] as IVertexLocation);
+        current = unvisitedSiblings[randomSibling] as IVertexLocation;
+        visitedNodes.declareNodeAsVisited(current.row, current.column);
         nodesToGo--;
       } else {
         if (stack.length) {
-          current = stack.pop() as number;
+          current = stack.pop() as IVertexLocation;
         } else {
           break;
         }
@@ -47,7 +72,7 @@ export class Graph {
     }
   }
 
-  public getGraph(): Array<Vertex> {
+  public getGraph(): Array<Array<Vertex>> {
     return this._adjacencyList
   }
 

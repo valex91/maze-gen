@@ -1,6 +1,7 @@
 import { inject } from 'inversion-box'
 import { CollisionDetection } from '../collision-detection/collision-detection';
 import { GoalLayer } from '../goal-layer/goal-layer';
+import { IVertexLocation } from '../graph/graph';
 import { KeyboardHandler } from '../keyboard-handler/keyboard-handler';
 import { MainCanvasGenerator } from '../main-canvas-generator/main-canvas-generator';
 import { Movements } from '../movements/movements';
@@ -29,10 +30,10 @@ export class MazeRenderer {
 
     this._goalLayer = GoalLayer.create(mainCanvas, TILE_SIZE);
     const mazeSize: number = this._size * this._size;
-    this._startingPoint = Math.floor((Math.random() * mazeSize));
+    this._startingPoint = Math.floor((Math.random() * 599) % mazeSize);
   }
 
-  public render(graphAdjacencyList: Array<Vertex>): void {
+  public render(graphAdjacencyList: Array<Array<Vertex>>): void {
     const startingPoint: number = this._generateRandomIndex(),
       goal: number = this._generateRandomIndex();
 
@@ -48,8 +49,8 @@ export class MazeRenderer {
         if (codedIndex === goal) {
           this._goalLayer.init(scaledCoordinates);
         }
-        this._collisionDetection.registerCellBoundaries(scaledCoordinates, graphAdjacencyList[codedIndex].getEdges());
-        this._renderCell(scaledCoordinates, graphAdjacencyList[codedIndex].getEdges(), TILE_SIZE)
+        this._collisionDetection.registerCellBoundaries(scaledCoordinates, graphAdjacencyList[i][j].getEdges());
+        this._renderCell(scaledCoordinates, graphAdjacencyList[i][j].getEdges(), TILE_SIZE)
       }
     }
   }
@@ -60,8 +61,8 @@ export class MazeRenderer {
     this._goalLayer.clear();
   }
 
-  private _renderCell(coords: ICoordinates, cellWalls: Array<number>, size: number) {
-    cellWalls.forEach((w: number, index: number) => {
+  private _renderCell(coords: ICoordinates, cellWalls: Array<IVertexLocation | -1>, size: number) {
+    cellWalls.forEach((w: IVertexLocation | -1, index: number) => {
       this._context.beginPath();
       this._adjustedMoveTo(coords.x, coords.y);
       switch (index) {

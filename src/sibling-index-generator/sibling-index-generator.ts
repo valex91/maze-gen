@@ -1,28 +1,30 @@
+import { IVertexLocation } from '../graph/graph';
+
 export class SiblingIndexGenerator {
-  private _boundaries: number;
+  private readonly _boundaries: number;
 
   constructor(size: number) {
     this._boundaries = size;
   }
 
-  public generateYSibling(row: number, rowIndex: number, difference: number): number {
+  public generateYSibling(row: number, column: number, difference: number): number | IVertexLocation {
     const _row = (row + difference);
 
     if (this._isOutSideBoundaries(_row)) {
       return Infinity;
     }
 
-    return parseInt(_row.toString() + rowIndex.toString());
+    return { row: _row, column };
   }
 
-  public generateXSibling(row: number, rowIndex: number, difference: number): number {
-    const _rowIndex = (rowIndex + difference);
+  public generateXSibling(row: number, column: number, difference: number): number | IVertexLocation {
+    const _column = (column + difference);
 
-    if (this._isOutSideBoundaries(_rowIndex)) {
+    if (this._isOutSideBoundaries(_column)) {
       return Infinity;
     }
 
-    return parseInt(row.toString() + _rowIndex.toString());
+    return { row, column: _column };
   }
 
   _isOutSideBoundaries(value: number) {

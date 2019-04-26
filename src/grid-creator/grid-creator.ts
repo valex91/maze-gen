@@ -10,10 +10,8 @@ export class GridCreator {
       const siblingGenerator: SiblingIndexGenerator = new SiblingIndexGenerator(size);
       for (let i = 0; i < size; i++) {
         for (let j = 0; j < size; j++) {
-          const codedIndex: number = parseInt(i.toString() + j.toString());
-
-          _graph.AddVertex(codedIndex);
-          const newVertex: Vertex = _graph.getVertex(codedIndex);
+          _graph.AddVertex(i, j);
+          const newVertex: Vertex = _graph.getVertex(i,j);
 
           const topSibling = siblingGenerator.generateYSibling(i, j, -1);
           const bottomSibling = siblingGenerator.generateYSibling(i, j, 1);
@@ -27,7 +25,7 @@ export class GridCreator {
         }
       }
 
-      _graph.generateEntropy(0);
+      _graph.generateEntropy({ row: 0, column: 0 });
       const renderInstance = new MazeRenderer(size);
       renderInstance.render(_graph.getGraph());
       res(renderInstance);
