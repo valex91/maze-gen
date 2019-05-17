@@ -1,7 +1,7 @@
-const path = require('path');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const HTMLWebpackPlugin = require('html-webpack-plugin');
+const path = require('path'),
+  UglifyJsPlugin = require('uglifyjs-webpack-plugin'),
+  MiniCssExtractPlugin = require("mini-css-extract-plugin"),
+  HTMLWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: 'production',
