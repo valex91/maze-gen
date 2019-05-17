@@ -6,6 +6,7 @@ import { MainCanvasGenerator } from '../main-canvas-generator/main-canvas-genera
 import { Movements } from '../movements/movements';
 import { PlayerLayer } from '../player-layer/player-layer';
 import { Vertex } from '../vertex/vertex';
+import wrongPathCheckerInstance from '../wrongPath/wrongPath';
 import { ICoordinates } from './coordinates.interface';
 import { PIXEL_FIX } from './pixel_fix.constant';
 import { TILE_SIZE } from './tile-size';
@@ -58,6 +59,7 @@ export class MazeRenderer {
     this._movements.clear();
     this._playerLayer.clear();
     this._goalLayer.clear();
+    wrongPathCheckerInstance.clear()
   }
 
   private _renderCell(coords: ICoordinates, cellWalls: Array<IVertexLocation | -1>, size: number) {
